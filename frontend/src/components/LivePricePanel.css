@@ -1,0 +1,446 @@
+.live-price-panel {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  border: 1px solid #E5E7EB;
+  margin-bottom: 24px;
+}
+
+.price-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.price-header h3 {
+  color: #1F2937;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.refresh-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.refresh-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #3B82F6;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.refresh-btn:hover:not(:disabled) {
+  background: #2563EB;
+  transform: translateY(-1px);
+}
+
+.refresh-btn:disabled {
+  background: #9CA3AF;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.refresh-icon {
+  transition: transform 0.3s ease;
+}
+
+.refresh-icon.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.last-update {
+  font-size: 12px;
+  color: #6B7280;
+  font-style: italic;
+}
+
+.currency-selectors {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 16px;
+  align-items: end;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: #F9FAFB;
+  border-radius: 12px;
+}
+
+.currency-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.currency-selector label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.currency-select {
+  padding: 10px 12px;
+  border: 2px solid #E5E7EB;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  background: white;
+  color: #1F2937;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.currency-select:focus {
+  outline: none;
+  border-color: #3B82F6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.currency-swap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.swap-btn {
+  background: white;
+  border: 2px solid #E5E7EB;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #6B7280;
+}
+
+.swap-btn:hover {
+  border-color: #3B82F6;
+  color: #3B82F6;
+  transform: rotate(180deg);
+}
+
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px;
+  color: #6B7280;
+  font-style: italic;
+}
+
+.loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #E5E7EB;
+  border-top: 2px solid #3B82F6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.error-state {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  border-radius: 8px;
+  color: #DC2626;
+  font-weight: 500;
+}
+
+.error-icon {
+  font-size: 18px;
+}
+
+.price-display {
+  text-align: center;
+  padding: 20px 0;
+  border-bottom: 1px solid #E5E7EB;
+  margin-bottom: 20px;
+}
+
+.currency-pair {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.base-currency, .target-currency {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.currency-flag {
+  font-size: 20px;
+}
+
+.separator {
+  font-size: 16px;
+  color: #6B7280;
+  font-weight: 400;
+}
+
+.current-price {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.price-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: #3B82F6;
+  font-family: 'Monaco', 'Menlo', monospace;
+}
+
+.price-label {
+  font-size: 14px;
+  color: #6B7280;
+  font-weight: 500;
+}
+
+.signal-display {
+  margin-bottom: 20px;
+}
+
+.signal-header {
+  margin-bottom: 16px;
+}
+
+.signal-header h4 {
+  color: #1F2937;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.signal-main {
+  margin-bottom: 16px;
+}
+
+.signal-indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+}
+
+.signal-icon {
+  font-size: 24px;
+}
+
+.signal-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.signal-type {
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.signal-strength {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.signal-reason {
+  padding: 12px 16px;
+  background: #F3F4F6;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.signal-reason p {
+  margin: 0;
+  color: #4B5563;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.bollinger-levels {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.bb-level {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #F9FAFB;
+  border-radius: 8px;
+  border-left: 4px solid #E5E7EB;
+}
+
+.bb-level.middle {
+  border-left-color: #F59E0B;
+  background: #FFFBEB;
+}
+
+.bb-label {
+  font-size: 12px;
+  color: #6B7280;
+  font-weight: 500;
+}
+
+.bb-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1F2937;
+  font-family: 'Monaco', 'Menlo', monospace;
+}
+
+.market-analysis {
+  padding: 16px;
+  background: #F8FAFC;
+  border-radius: 12px;
+  border: 1px solid #E2E8F0;
+}
+
+.market-analysis h4 {
+  color: #1F2937;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+}
+
+.analysis-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.trend-indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.trend-label {
+  font-size: 14px;
+  color: #6B7280;
+  font-weight: 500;
+}
+
+.trend-value {
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.trend-value.bullish {
+  background: #D1FAE5;
+  color: #065F46;
+}
+
+.trend-value.bearish {
+  background: #FEE2E2;
+  color: #991B1B;
+}
+
+.trend-value.sideways {
+  background: #FEF3C7;
+  color: #92400E;
+}
+
+.confidence-badge {
+  background: #3B82F6;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.insights {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.insight-item {
+  margin: 0;
+  padding: 8px 12px;
+  background: white;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #4B5563;
+  line-height: 1.4;
+  border-left: 3px solid #3B82F6;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .currency-selectors {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .currency-swap {
+    order: 3;
+    margin: 8px 0;
+  }
+  
+  .swap-btn {
+    transform: rotate(90deg);
+  }
+  
+  .swap-btn:hover {
+    transform: rotate(270deg);
+  }
+  
+  .price-value {
+    font-size: 24px;
+  }
+  
+  .bollinger-levels {
+    grid-template-columns: 1fr;
+  }
+  
+  .trend-indicator {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}

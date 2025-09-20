@@ -1,12 +1,30 @@
 import React, { useState, useEffect } from 'react';
+import { AuthProvider, useAuth } from './AuthContext';
+import Login from './Login';
+import Signup from './Signup';
+import UserDashboard from './UserDashboard';
+import InstitutionDashboard from './InstitutionDashboard';
 import './App.css';
+import './Dashboard.css';
 
-function App() {
+// Main Dashboard Component (when user is logged in)
+function Dashboard() {
   const [forexData, setForexData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [baseCurrency, setBaseCurrency] = useState('USD');
   const [targetCurrency, setTargetCurrency] = useState('EUR');
+  const [userTrades, setUserTrades] = useState([]);
+
+  const { user, signOut, session } = useAuth();
+  const userRole = user?.user_metadata?.role || 'user';
+
+  const getAuthHeaders = () => {
+    return session?.access_token ? {
+      'Authorization': `Bearer ${session.access_token}`,
+      'Content-Type': 'application/json'
+    } : { 'Content-Type': 'application/json' };
+  };
 
   const fetchForexData = async () => {
     setLoading(true);
@@ -48,128 +66,152 @@ function App() {
     }
   };
 
-  const fetchTestData = async () => {
-    setLoading(true);
-    setError(null);
+  const fetchUserTrades = async () => {
     try {
-      const response = await fetch(`http://localhost:5002/api/forex/test`);
+      const response = await fetch('http://localhost:5002/api/trades', {
+        headers: getAuthHeaders()
+      });
       const result = await response.json();
       
       if (result.success) {
-        setForexData(result.data);
-      } else {
-        setError('Failed to fetch test data');
+        setUserTrades(result.data);
       }
     } catch (err) {
-      console.error('Frontend error:', err);
-      setError('Error connecting to server. Backend might not be running.');
-    } finally {
-      setLoading(false);
+      console.error('Error fetching trades:', err);
+    }
+  };
+
+  const createSampleTrade = async () => {
+    if (!forexData || !forexData.rates) return;
+
+    try {
+      const sampleTrade = {
+        strategy: userRole === 'institution' ? 'Auto-Strategy' : 'Manual',
+        currency_pair: `${baseCurrency}/${targetCurrency}`,
+        trade_type: 'Buy',
+        price: forexData.rates[targetCurrency] || 1.0,
+        quantity: userRole === 'institution' ? 10000 : 1000,
+        trade_date: new Date().toISOString()
+      };
+
+      const response = await fetch('http://localhost:5002/api/trades', {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(sampleTrade)
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        alert('Sample trade created successfully!');
+        fetchUserTrades();
+      } else {
+        alert('Failed to create trade: ' + result.error);
+      }
+    } catch (err) {
+      console.error('Error creating trade:', err);
+      alert('Error creating trade');
+    }
+  };
+
+  const handleSignOut = async () => {
+    const { error } = await signOut();
+    if (error) {
+      console.error('Sign out error:', error);
     }
   };
 
   useEffect(() => {
-    fetchForexData();
-  }, []);
+    if (user) {
+      fetchForexData();
+      fetchUserTrades();
+    }
+  }, [user]);
+
+  const dashboardProps = {
+    forexData,
+    loading,
+    error,
+    baseCurrency,
+    setBaseCurrency,
+    targetCurrency,
+    setTargetCurrency,
+    fetchForexData,
+    fetchCurrencyPair,
+    userTrades,
+    createSampleTrade,
+    user,
+    session
+  };
 
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>🏦 Forex Trading Dashboard</h1>
-        <p>Real-time exchange rates powered by ExchangeRate API</p>
-        <p>✅ Backend running on: <strong>http://localhost:5002</strong></p>
-      </header>
-
-      <main className="main-content">
-        <div className="controls">
-          <div className="currency-selector">
-            <label>
-              Base Currency:
-              <select 
-                value={baseCurrency} 
-                onChange={(e) => setBaseCurrency(e.target.value)}
-              >
-                <option value="USD">USD - US Dollar</option>
-                <option value="EUR">EUR - Euro</option>
-                <option value="GBP">GBP - British Pound</option>
-                <option value="JPY">JPY - Japanese Yen</option>
-                <option value="CAD">CAD - Canadian Dollar</option>
-                <option value="AUD">AUD - Australian Dollar</option>
-                <option value="CHF">CHF - Swiss Franc</option>
-                <option value="CNY">CNY - Chinese Yuan</option>
-              </select>
-            </label>
-
-            <label>
-              Target Currency:
-              <select 
-                value={targetCurrency} 
-                onChange={(e) => setTargetCurrency(e.target.value)}
-              >
-                <option value="EUR">EUR - Euro</option>
-                <option value="USD">USD - US Dollar</option>
-                <option value="GBP">GBP - British Pound</option>
-                <option value="JPY">JPY - Japanese Yen</option>
-                <option value="CAD">CAD - Canadian Dollar</option>
-                <option value="AUD">AUD - Australian Dollar</option>
-                <option value="CHF">CHF - Swiss Franc</option>
-                <option value="CNY">CNY - Chinese Yuan</option>
-              </select>
-            </label>
+      <nav className="navbar">
+        <div className="navbar-content">
+          <div className="navbar-brand">
+            <div className="brand-icon">FX</div>
+            <div className="brand-info">
+              <h1 className="brand-title">ForexTrader Pro</h1>
+              <p className="brand-subtitle">Professional Trading Platform</p>
+            </div>
           </div>
-
-          <div className="buttons">
-            <button onClick={fetchTestData} disabled={loading}>
-              🧪 Test Connection
-            </button>
-            <button onClick={fetchForexData} disabled={loading}>
-              Get All Rates for {baseCurrency}
-            </button>
-            <button onClick={fetchCurrencyPair} disabled={loading}>
-              Get {baseCurrency}/{targetCurrency} Rate
+          <div className="navbar-actions">
+            <div className="user-info">
+              <span className="user-welcome">Welcome back,</span>
+              <span className="user-name">{user?.user_metadata?.name || user?.email?.split('@')[0]}</span>
+              <span className="user-role">({userRole === 'institution' ? 'Institution' : 'Individual'})</span>
+            </div>
+            <button onClick={handleSignOut} className="signout-button">
+              <span>Sign Out</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
+              </svg>
             </button>
           </div>
         </div>
+      </nav>
 
-        {loading && <div className="loading">Loading forex data...</div>}
-        
-        {error && <div className="error">{error}</div>}
-
-        {forexData && (
-          <div className="forex-data">
-            <div className="data-header">
-              <h2>📈 Exchange Rate Data</h2>
-              <p>Base Currency: <strong>{forexData.base}</strong></p>
-              <p>Last Updated: <strong>{forexData.date}</strong></p>
-            </div>
-
-            {forexData.rates ? (
-              <div className="rates-grid">
-                <h3>All Exchange Rates (1 {forexData.base} =)</h3>
-                <div className="rates-list">
-                  {Object.entries(forexData.rates)
-                    .slice(0, 20) // Show first 20 currencies
-                    .map(([currency, rate]) => (
-                      <div key={currency} className="rate-item">
-                        <span className="currency">{currency}</span>
-                        <span className="rate">{rate.toFixed(4)}</span>
-                      </div>
-                    ))}
-                </div>
-              </div>
-            ) : (
-              <div className="pair-data">
-                <h3>Currency Pair Rate</h3>
-                <div className="pair-rate">
-                  <p>1 {forexData.base_code} = {forexData.conversion_rate} {forexData.target_code}</p>
-                  <p>Last Updated: {forexData.time_last_update_utc}</p>
-                </div>
-              </div>
-            )}
-          </div>
+      <main className="main-content">
+        {userRole === 'institution' ? (
+          <InstitutionDashboard {...dashboardProps} />
+        ) : (
+          <UserDashboard {...dashboardProps} />
         )}
       </main>
     </div>
+  );
+}
+
+// Authentication wrapper component
+function AuthWrapper() {
+  const { user, loading } = useAuth();
+  const [isLogin, setIsLogin] = useState(true);
+
+  if (loading) {
+    return (
+      <div className="loading-screen">
+        <div className="loading">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return isLogin ? (
+      <Login onToggleMode={() => setIsLogin(false)} />
+    ) : (
+      <Signup onToggleMode={() => setIsLogin(true)} />
+    );
+  }
+
+  return <Dashboard />;
+}
+
+// Main App component with AuthProvider
+function App() {
+  return (
+    <AuthProvider>
+      <AuthWrapper />
+    </AuthProvider>
   );
 }
 
