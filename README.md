@@ -264,19 +264,3 @@ This project is licensed under the MIT License.
 * Deploy backend (Railway/Render) + frontend (Vercel/Netlify).
 * Add **user authentication** (Supabase Auth).
 
-✅ Deliverable: Deployed, professional dashboard with both strategies + comparison + docs.
-
----
-
-## 🔹 **Key Deliverables by End**
-
-1. **Dashboard:** Candlestick + Bollinger bands + ML signals.
-2. **Trade Blotter:** Buy/Sell + executed prices + P/L.
-3. **Strategy Comparison:** Bollinger vs ML metrics.
-4. **Reference Panel:** Explains algo & ML strategy.
-5. **Database:** Supabase storing trades & signals for both strategies.
-
----
-
-If you want, I can **also draw a visual roadmap showing workflow for Bollinger + ML strategy** — connecting **data → backend → algorithm → frontend visualization → comparison**. This will make the timeline and phases super clear for your implementation.
-
