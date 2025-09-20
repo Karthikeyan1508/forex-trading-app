@@ -1,4 +1,160 @@
-Perfect! Let’s extend your 20-hour **Forex trading project** to include an **ML-based trading strategy** alongside your Bollinger Bands algo. I’ll break it into **phases with estimated time** and show how to integrate ML into your existing React + Express + Supabase stack.
+# 🏦 Forex Trading App
+
+A full-stack forex trading application with real-time exchange rates, algorithmic trading strategies, and machine learning predictions.
+
+## 🚀 Features
+
+- **Real-time Exchange Rates** - Live forex data from ExchangeRate API
+- **Beautiful Dashboard** - Modern React UI with gradient design
+- **Multiple Currency Support** - USD, EUR, GBP, JPY, CAD, AUD, CHF, CNY, and more
+- **Responsive Design** - Works on desktop and mobile
+- **RESTful API** - Express.js backend with CORS support
+- **Test Mode** - Mock data for development and testing
+
+## 🛠️ Tech Stack
+
+### Frontend
+- **React** - User interface
+- **CSS3** - Modern styling with gradients and animations
+- **Fetch API** - HTTP requests to backend
+
+### Backend
+- **Node.js** - Runtime environment
+- **Express.js** - Web framework
+- **Axios** - HTTP client for external APIs
+- **CORS** - Cross-origin resource sharing
+- **Nodemon** - Development server auto-restart
+
+### APIs
+- **ExchangeRate API** - Free forex data (no API key required)
+
+## 📦 Installation
+
+### Prerequisites
+- Node.js (v14 or higher)
+- npm or yarn
+
+### Quick Start
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Karthikeyan1508/forex-trading-app.git
+   cd forex-trading-app
+   ```
+
+2. **Install Backend Dependencies**
+   ```bash
+   cd backend
+   npm install
+   ```
+
+3. **Install Frontend Dependencies**
+   ```bash
+   cd ../frontend
+   npm install
+   ```
+
+4. **Start the Backend Server**
+   ```bash
+   cd ../backend
+   npm run dev
+   ```
+   Server runs on: http://localhost:5002
+
+5. **Start the Frontend**
+   ```bash
+   cd ../frontend
+   npm start
+   ```
+   App runs on: http://localhost:3000
+
+## 🔗 API Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/health` | GET | Health check |
+| `/api/forex/test` | GET | Test endpoint with mock data |
+| `/api/forex/latest/:base` | GET | Get all rates for base currency |
+| `/api/forex/pair/:from/:to` | GET | Get specific currency pair rate |
+| `/api/forex/currencies` | GET | Get supported currencies |
+
+### Example Requests
+
+```bash
+# Health check
+curl http://localhost:5002/api/health
+
+# Test data
+curl http://localhost:5002/api/forex/test
+
+# Get USD rates
+curl http://localhost:5002/api/forex/latest/USD
+
+# Get EUR/USD pair
+curl http://localhost:5002/api/forex/pair/EUR/USD
+```
+
+## 🎯 Usage
+
+1. **Open the app** at http://localhost:3000
+2. **Select currencies** from the dropdown menus
+3. **Click "🧪 Test Connection"** to verify backend connectivity
+4. **Click "Get All Rates"** to fetch real-time exchange rates
+5. **Click "Get Pair Rate"** to get specific currency pair data
+
+## 🔧 Configuration
+
+The backend uses port 5002 by default. You can change this in:
+- `backend/.env` file: `PORT=5002`
+- Or via environment variable: `PORT=3001 npm start`
+
+## 📁 Project Structure
+
+```
+forex-trading-app/
+├── backend/
+│   ├── server.js          # Express server
+│   ├── package.json       # Backend dependencies
+│   └── .env              # Environment variables
+├── frontend/
+│   ├── src/
+│   │   ├── App.js        # Main React component
+│   │   ├── App.css       # Styles
+│   │   └── index.js      # React entry point
+│   └── package.json      # Frontend dependencies
+├── .gitignore            # Git ignore rules
+├── README.md             # This file
+└── SETUP.md              # Setup instructions
+```
+
+## 🌟 Future Enhancements
+
+- **Bollinger Bands Algorithm** - Mean reversion trading strategy
+- **Machine Learning Strategy** - Logistic regression for trade signals
+- **Historical Data** - Charts and backtesting
+- **User Authentication** - Secure login system
+- **Trade Execution** - Paper trading simulation
+- **Performance Analytics** - P/L tracking and metrics
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 📞 Contact
+
+**Karthikeyan** - [GitHub](https://github.com/Karthikeyan1508)
+
+---
+
+⭐ **Star this repository** if you found it helpful!
 
 ---
 
