@@ -3,9 +3,6 @@ const cors = require('cors');
 const axios = require('axios');
 require('dotenv').config();
 
-// Import Bollinger Bands utilities
-const { getBollingerBandsAnalysis } = require('./utils/bollingerBands');
-
 const app = express();
 const PORT = process.env.PORT || 5002;
 
@@ -501,179 +498,25 @@ const currencyData = {
 };
 
 // ==================== BOLLINGER BANDS STRATEGY ROUTES ====================
+// NOTE: These routes have been temporarily disabled as the utility files were removed
+// TODO: Re-implement with updated technical analysis libraries if needed
+
+/*
 // Get comprehensive Bollinger Bands analysis for a currency pair
 app.get('/api/bollinger/:from/:to', async (req, res) => {
-  try {
-    const { from, to } = req.params;
-    
-    console.log(`🎯 API Request: Bollinger Bands analysis for ${from}/${to}`);
-    
-    // Use CSV-integrated Bollinger Bands analysis
-    const analysis = await getBollingerBandsAnalysis(from, to);
-    
-    res.json({
-      success: true,
-      message: `Bollinger Bands analysis for ${from}/${to}`,
-      data: analysis
-    });
-  } catch (error) {
-    console.error('❌ Bollinger Bands API Error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to perform Bollinger Bands analysis',
-      details: error.message
-    });
-  }
+  // Disabled - utility functions removed
 });
 
-// Get current trading signal for a currency pair
+// Get current trading signal for a currency pair  
 app.get('/api/signal/:from/:to', async (req, res) => {
-  try {
-    const { from, to } = req.params;
-    
-    // Get Bollinger Bands data
-    const bollingerData = await getHistoricalBollingerData(from, to, 30);
-    
-    // Get current rate
-    const currentRateResponse = await axios.get(`${EXCHANGE_RATE_API_URL}/${from}`);
-    const currentRate = currentRateResponse.data.rates[to];
-    
-    if (!currentRate) {
-      return res.status(400).json({
-        success: false,
-        error: `Exchange rate not available for ${from}/${to}`
-      });
-    }
-
-    // Evaluate auto-trading conditions if requested
-    const autoTradingEval = evaluateAutoTradingConditions(bollingerData, {
-      maxRisk: 2,
-      minConfidence: 70
-    });
-
-    res.json({
-      success: true,
-      data: {
-        currencyPair: `${from}/${to}`,
-        currentPrice: currentRate,
-        signal: bollingerData.bollingerBands.currentSignal,
-        analysis: bollingerData.analysis,
-        autoTradingRecommendation: autoTradingEval,
-        timestamp: new Date().toISOString()
-      }
-    });
-  } catch (error) {
-    console.error('Signal generation error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to generate trading signal'
-    });
-  }
+  // Disabled - utility functions removed
 });
 
 // Get backtesting results for Bollinger Bands strategy
 app.get('/api/backtest/:from/:to', async (req, res) => {
-  try {
-    const { from, to } = req.params;
-    const days = parseInt(req.query.days) || 90;
-    const initialBalance = parseFloat(req.query.balance) || 10000;
-    
-    const bollingerData = await getHistoricalBollingerData(from, to, days);
-    
-    // Simulate trading based on signals
-    let balance = initialBalance;
-    let position = 0;
-    let trades = [];
-    let maxDrawdown = 0;
-    let peakBalance = initialBalance;
-    
-    const signals = bollingerData.bollingerBands.signals || [];
-    const historicalData = bollingerData.historical || [];
-    
-    for (let i = 0; i < signals.length; i++) {
-      const signal = signals[i];
-      const price = signal.price;
-      
-      if (signal.signal.includes('BUY') && position <= 0 && signal.strength > 70) {
-        // Buy signal
-        const tradeSize = Math.floor(balance * 0.1); // 10% of balance
-        const quantity = tradeSize / price;
-        position += quantity;
-        balance -= tradeSize;
-        
-        trades.push({
-          type: 'BUY',
-          price: price,
-          quantity: quantity,
-          amount: tradeSize,
-          balance: balance,
-          signal: signal.signal,
-          strength: signal.strength,
-          date: historicalData[signal.index]?.date || new Date().toISOString()
-        });
-      } else if (signal.signal.includes('SELL') && position > 0 && signal.strength > 70) {
-        // Sell signal
-        const saleAmount = position * price;
-        balance += saleAmount;
-        
-        trades.push({
-          type: 'SELL',
-          price: price,
-          quantity: position,
-          amount: saleAmount,
-          balance: balance,
-          signal: signal.signal,
-          strength: signal.strength,
-          date: historicalData[signal.index]?.date || new Date().toISOString()
-        });
-        
-        position = 0;
-      }
-      
-      // Calculate drawdown
-      if (balance > peakBalance) {
-        peakBalance = balance;
-      }
-      const drawdown = ((peakBalance - balance) / peakBalance) * 100;
-      if (drawdown > maxDrawdown) {
-        maxDrawdown = drawdown;
-      }
-    }
-    
-    // Final position value
-    const finalValue = balance + (position * signals[signals.length - 1]?.price || 0);
-    const totalReturn = ((finalValue - initialBalance) / initialBalance) * 100;
-    const winningTrades = trades.filter(t => t.type === 'SELL').filter(t => {
-      const buyTrade = trades.reverse().find(bt => bt.type === 'BUY' && bt.date < t.date);
-      return buyTrade ? t.price > buyTrade.price : false;
-    }).length;
-    
-    const totalTrades = trades.filter(t => t.type === 'SELL').length;
-    
-    res.json({
-      success: true,
-      data: {
-        currencyPair: `${from}/${to}`,
-        backtestPeriod: `${days} days`,
-        initialBalance,
-        finalBalance: Math.round(finalValue * 100) / 100,
-        totalReturn: Math.round(totalReturn * 100) / 100,
-        totalTrades,
-        winningTrades,
-        winRate: totalTrades > 0 ? Math.round((winningTrades / totalTrades) * 100) : 0,
-        maxDrawdown: Math.round(maxDrawdown * 100) / 100,
-        trades: trades.slice(-20), // Last 20 trades
-        analysis: bollingerData.analysis
-      }
-    });
-  } catch (error) {
-    console.error('Backtesting error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to run backtest'
-    });
-  }
+  // Disabled - utility functions removed
 });
+*/
 
 // ==================== INSTITUTION ROUTES (Role-based) ====================
 // Get auto-trades for the institution
